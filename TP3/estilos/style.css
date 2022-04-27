@@ -1,0 +1,40 @@
+html * {
+    font-family: Arial, sans-serif;
+    color: #333300;
+}
+body {
+    background-color: #999966;
+}
+
+code {
+    font-family: Consolas, monospace;
+    color: black;
+    font-weight: bold;
+}
+
+header, nav {
+    background-color: #888833;
+}
+.selected, nav a:hover {
+    color: white;
+    font-style: italic;
+    background-color: #666633;
+}
+
+footer {
+    background-color: #666633;
+    color: #cccc99;
+    font-size: x-small;
+    font-style: italic;
+}
+section {
+    background-color: #cccc99;
+}
+
+section a{
+    color: #444411;
+}
+
+footer a{
+    color: #eeeebb;
+}
