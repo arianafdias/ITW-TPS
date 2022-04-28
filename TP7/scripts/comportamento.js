@@ -221,15 +221,21 @@ function pedeMaximoAleatorio() {
 function pedeNumeroInteiro(minimo, maximo, proposito = PROPOSITO_ADIVINHAR) {
 
   // Exercício: Colocar aqui o código da função.
-  let numInt = parseInt(window.prompt('Número?'));
-  while ((Number.isNaN(numInt))
-      || (proposito === PROPOSITO_MAXIMO_ALEATORIO && numInt < minimo)
-      || (proposito === PROPOSITO_MINIMO_ALEATORIO && numInt > maximo)){
-
-    numInt = parseInt(window.prompt('Número?'));
+  let numInt;
+  let flag = false;
+  while (!flag){
+    numInt = (window.prompt(`${proposito}, digite um número inteiro entre ${minimo} e ${maximo}.`));
+    if (Number.isNaN(parseInt(numInt))){
+      proposito = `O valor ${numInt} não é um número inteiro.`;
+    } else if (((proposito !== PROPOSITO_MINIMO_ALEATORIO )&& numInt < minimo)
+        || ((proposito!== PROPOSITO_MAXIMO_ALEATORIO || proposito === PROPOSITO_ADIVINHAR )&& numInt > maximo)){
+      proposito = `O valor ${numInt} está fora do intervalo de validade.`
+    } else {
+      flag = true;
+    }
   }
-  return numInt
-};
+  return parseInt(numInt);
+}
 
 
 /* ------------------------------------------------------------------------- */

@@ -29,6 +29,9 @@ const DURACAO_MINIMA = 10;
 /** Span que guarda o tempo de jogo restante*/
 const SPAN_TEMPO_RESTANTE = "spanTempoRestante";
 
+/** Span que guarda o tempo de jogo decorrido*/
+const SPAN_TEMPO_JOGO = "spanTempoJogo";
+
 /* ------------------------------------------------------------------------- */
 
 /** Célula que guarda o número de tentativas na tabela de configuração. */
@@ -146,6 +149,8 @@ let jogo = {
 window.onload = principal;
 
 /* ------------------------------------------------------------------------- */
+// Temporizadores
+let temporizadorTempoJogo;
 let temporizadorTempoRestante;
 let temporizadorDuracaoMaxima;
 /* ------------------------------------------------------------------------- */
@@ -261,15 +266,21 @@ function pedeMaximoAleatorio() {
 function pedeNumeroInteiro(minimo, maximo, proposito = PROPOSITO_ADIVINHAR) {
 
   // Exercício: Colocar aqui o código da função.
-  let numInt = parseInt(window.prompt(proposito +' digite um número inteiro entre A e B'));
-  while ((Number.isNaN(numInt))
-      || (proposito === PROPOSITO_MAXIMO_ALEATORIO && numInt < minimo)
-      || (proposito === PROPOSITO_MINIMO_ALEATORIO && numInt > maximo)){
-
-    numInt = parseInt(window.prompt('Número?'));
+  let numInt;
+  let flag = false;
+  while (!flag){
+    numInt = (window.prompt(`${proposito}, digite um número inteiro entre ${minimo} e ${maximo}.`));
+    if (Number.isNaN(parseInt(numInt))){
+      proposito = `O valor ${numInt} não é um número inteiro.`;
+    } else if (((proposito !== PROPOSITO_MINIMO_ALEATORIO )&& numInt < minimo)
+        || ((proposito!== PROPOSITO_MAXIMO_ALEATORIO || proposito === PROPOSITO_ADIVINHAR )&& numInt > maximo)){
+      proposito = `O valor ${numInt} está fora do intervalo de validade.`
+    } else {
+      flag = true;
+    }
   }
-  return numInt
-};
+  return parseInt(numInt);
+}
 
 
 /* ------------------------------------------------------------------------- */
@@ -402,8 +413,10 @@ function iniciaJogo() {
   document.getElementById(BOTAO_CANCELA_JOGO).disabled = false;
   document.getElementById(SPAN_TEMPO_RESTANTE).innerHTML =
       document.getElementById(TD_DURACAO_MAXIMA).innerText.toString();
+
+  temporizadorTempoJogo = setInterval(mostraTempoJogo,1000);
   temporizadorTempoRestante = setInterval(mostraTempoRestante,1000);
-  temporizadorDuracaoMaxima = setTimeout(cancelaJogo, parseInt(document.getElementById(SPAN_TEMPO_RESTANTE).innerText) *1000 +1000);
+  temporizadorDuracaoMaxima = setTimeout(cancelaJogo, parseInt(document.getElementById(SPAN_TEMPO_RESTANTE).innerText) * 1000+500 );
 
 };
 
@@ -438,9 +451,11 @@ function terminaJogo(resultado) {
   document.getElementById(BOTAO_INICIA_JOGO).disabled = false;
   document.getElementById(BOTAO_DURACAO_MAXIMA).disabled = false;
 
-
+  temporizadorTempoJogo = clearInterval(temporizadorTempoJogo);
+  temporizadorDuracaoMaxima = clearTimeout(temporizadorDuracaoMaxima)
   temporizadorTempoRestante= clearInterval(temporizadorTempoRestante);
   document.getElementById(SPAN_TEMPO_RESTANTE).innerHTML = '0';
+  document.getElementById(SPAN_TEMPO_JOGO).innerHTML = '0';
 
 };
 
@@ -455,16 +470,18 @@ function geraNumeroInteiroAleatorio(minimo = MINIMO_ALEATORIO_OMISSAO,
                                     maximo = MAXIMO_ALEATORIO_OMISSAO) {
 
   // Exercício: Colocar aqui o código da função.
-  let randomNumer = Math.random() * ( maximo - minimo ) + minimo;
-  return Math.floor(randomNumer)
+  let randomNumber = Math.random() * ( maximo - minimo ) + minimo;
+  return Math.floor(randomNumber)
 };
 
 /* ------------------------------------------------------------------------- */
 
 function cancelaJogo(){
   terminaJogo(RESULTADO_CANCELOU);
+  temporizadorTempoJogo = clearInterval(temporizadorTempoJogo);
   temporizadorTempoRestante = clearInterval(temporizadorTempoRestante);
   document.getElementById(SPAN_TEMPO_RESTANTE).innerHTML = '0';
+  document.getElementById(SPAN_TEMPO_JOGO).innerHTML = '0';
 }
 
 function mostraTempoRestante(){
@@ -478,5 +495,12 @@ function pedeDuracaoMaxima() {
   configuracao.duracaoMaxima =
       pedeNumeroInteiro(DURACAO_MINIMA, Infinity, PROPOSITO_DURACAO_MAXIMA);
   mostraConfiguracaoJogo();
+}
+
+function mostraTempoJogo(){
+  let tempo_antigo = parseInt(document.getElementById(SPAN_TEMPO_JOGO).innerText)
+  let novo_tempo = tempo_antigo + 1;
+  let newTempo = novo_tempo.toString();
+  document.getElementById(SPAN_TEMPO_JOGO).innerHTML = newTempo;
 }
 
