@@ -32,6 +32,9 @@ const SPAN_TEMPO_RESTANTE = "spanTempoRestante";
 /** Span que guarda o tempo de jogo decorrido*/
 const SPAN_TEMPO_JOGO = "spanTempoJogo";
 
+/** Span que guarda as tentativas restantes*/
+const SPAN_TENTATIVAS_RESTANTES = "spanTentativasRestantes";
+
 /* ------------------------------------------------------------------------- */
 
 /** Célula que guarda o número de tentativas na tabela de configuração. */
@@ -190,6 +193,9 @@ function mostraConfiguracaoJogo() {
       configuracao.maximoAleatorio;
   document.getElementById(TD_DURACAO_MAXIMA).innerHTML =
       configuracao.duracaoMaxima;
+
+  document.getElementById(SPAN_TENTATIVAS_RESTANTES).innerHTML =
+      document.getElementById(TD_NUMERO_TENTATIVAS).innerText.toString();
 }
 
 /* ------------------------------------------------------------------------- */
@@ -375,6 +381,9 @@ function fazTentativa() {
       jogo.tentativas.length >= configuracao.numeroTentativas) {
     terminaJogo(resultadoTentativa);
   }
+
+  // Muda tentativas.
+  mostraTentativasRestantes()
 };
 
 /* ------------------------------------------------------------------------- */
@@ -413,6 +422,8 @@ function iniciaJogo() {
   document.getElementById(BOTAO_CANCELA_JOGO).disabled = false;
   document.getElementById(SPAN_TEMPO_RESTANTE).innerHTML =
       document.getElementById(TD_DURACAO_MAXIMA).innerText.toString();
+  document.getElementById(SPAN_TENTATIVAS_RESTANTES).innerHTML =
+      document.getElementById(TD_NUMERO_TENTATIVAS).innerText.toString();
 
   temporizadorTempoJogo = setInterval(mostraTempoJogo,1000);
   temporizadorTempoRestante = setInterval(mostraTempoRestante,1000);
@@ -504,3 +515,9 @@ function mostraTempoJogo(){
   document.getElementById(SPAN_TEMPO_JOGO).innerHTML = newTempo;
 }
 
+function mostraTentativasRestantes(){
+  let tentativaAnterior = parseInt(document.getElementById(SPAN_TENTATIVAS_RESTANTES).innerText);
+  let novaTentativa = tentativaAnterior - 1;
+  let newTry = novaTentativa.toString();
+  document.getElementById(SPAN_TENTATIVAS_RESTANTES).innerHTML = newTry;
+}
